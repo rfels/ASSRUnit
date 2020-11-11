@@ -1,7 +1,12 @@
 from assrunit.models.vierling import (
     SimpleModel,
     VierlingSimpleModel,
-    VierlingSimpleModelRobust,
+    VierlingSimpleModelRobust
+)
+from assrunit.models.chandelier import (
+    SimpleModelExtended,
+    ChandelierSimpleModel,
+    ChandelierSimpleModelRobust
 )
 from assrunit.models.genesis import (
     GenesisModel,
