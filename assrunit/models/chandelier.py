@@ -61,8 +61,8 @@ class SimpleModelExtended(object):
 
     def __init__(self, n_ex=20, n_bask=10, n_chand=10, eta=5.0, tau_R=0.1, tau_ex=2.0, tau_bask=8.0, tau_chand=8.0,
                  g_ee=0.015, g_eb=0.025, g_ec=0.025, g_be=0.015, g_ce=0.015, g_bb=0.02, g_cc=0.02, g_bc=0.02, g_de=0.3,
-                 g_db=0.08, g_dc=0.08, dt=0.05, b_ex=-0.01, b_bask=-0.01, b_chand=-0.01, drive_frequency=0.0,
-                 background_rate=33.3, A=0.5, seed=12345, filename='default', directory='/'):
+                 g_db=0.08, g_dc=0.08, dt=0.05, b_ex=-0.01, b_bask=-0.01, b_chand=-0.01,
+                 background_rate=33.3, A=0.5, filename='default', directory='/'):
         self.n_ex = n_ex
         self.n_bask = n_bask
         self.n_chand = n_chand
@@ -86,14 +86,12 @@ class SimpleModelExtended(object):
         self.b_ex = b_ex
         self.b_bask = b_bask
         self.b_chand = b_chand
-        self.drive_frequency = drive_frequency
         self.background_rate = background_rate
         self.A = A
-        self.seed = seed
         self.filename = filename
         self.directory = directory
 
-    def run(self, time=500, saveMEG=0, saveEX=0, saveBASK=0, saveCHAND=0):
+    def run(self, drive_frequency=40.0, seed=12345, time=500, saveMEG=0, saveEX=0, saveBASK=0, saveCHAND=0):
         """
         Runs the model and returns (and stores) the results
 
@@ -104,6 +102,9 @@ class SimpleModelExtended(object):
         saveBASK: flag that signalises whether the basket cell population activity should be stored
         saveCHAND: flag that signalises whether the chandelier cell population activity should be stored
         """
+
+        drive_frequency = drive_frequency
+        seed = seed
 
         time_points = np.linspace(0, time, int(time / self.dt) + 1)  # number of time steps (in ms)
 
@@ -142,11 +143,11 @@ class SimpleModelExtended(object):
         B_chand = self.b_chand * np.ones((self.n_chand,))  # applied current for chand cells
 
         # Frequency = 1000/period(in ms) and b= pi**2 / period**2 (because period = pi* sqrt(1/b); see Boergers and Kopell 2003) 
-        period = 1000.0 / self.drive_frequency
+        period = 1000.0 / drive_frequency
         b_drive = np.pi ** 2 / period ** 2  # applied current for drive cell
 
         # Seed the random generator
-        random.seed(self.seed)
+        random.seed(seed)
 
         # Noise spike trains
         ST_ex = [None] * self.n_ex
@@ -474,8 +475,8 @@ class ChandelierSimpleModel(sciunit.Model, ProduceXY):
         # generate the control network and run simulation
         control_model = SimpleModelExtended(self.controlparams)
         print("Control model created")
-        control_meg, _, _ = control_model.run(
-            self.time, 0, 0, 0, 0
+        control_meg, _, _, _ = control_model.run(
+            stimfrequency, self.seed, self.time, 0, 0, 0, 0
         )
         print("Control model simulated")
         control_pxx, freqs = control_model.calculatePSD(control_meg, self.time)
@@ -487,7 +488,7 @@ class ChandelierSimpleModel(sciunit.Model, ProduceXY):
         # generate the schizophrenia-like network and run simulation
         schiz_model = SimpleModelExtended(self.schizparams)
         print("Schiz model created")
-        schiz_meg, _, _ = schiz_model.run(self.time, 0, 0, 0, 0)
+        schiz_meg, _, _, _ = schiz_model.run(stimfrequency, self.seed, self.time, 0, 0, 0, 0)
         print("Schiz model simulated")
         schiz_pxx, freqs = schiz_model.calculatePSD(schiz_meg, self.time)
         print("Schiz PSD calculated")
@@ -533,7 +534,7 @@ class ChandelierSimpleModelRobust(sciunit.Model, ProduceXY):
             # generate the control network and run simulation
             control_model = SimpleModelExtended(self.controlparams)
             print("Control model created")
-            control_meg, _, _ = control_model.run(self.time, 0, 0, 0, 0)
+            control_meg, _, _, _ = control_model.run(stimfrequency, s, self.time, 0, 0, 0, 0)
             print("Control model simulated")
             control_pxx, freqs = control_model.calculatePSD(control_meg, self.time)
             print("Control PSD calculated")
@@ -542,7 +543,7 @@ class ChandelierSimpleModelRobust(sciunit.Model, ProduceXY):
             # generate the schizophrenia-like network and run simulation
             schiz_model = SimpleModelExtended(self.schizparams)
             print("Schiz model created")
-            schiz_meg, _, _ = schiz_model.run(self.time, 0, 0, 0, 0)
+            schiz_meg, _, _, _= schiz_model.run(stimfrequency, s, self.time, 0, 0, 0, 0)
             print("Schiz model simulated")
             schiz_pxx, freqs = schiz_model.calculatePSD(schiz_meg, self.time)
             print("Schiz PSD calculated")
@@ -573,7 +574,7 @@ class ChandelierSimpleModelRobust(sciunit.Model, ProduceXY):
             # generate the control network and run simulation
             control_model = SimpleModelExtended(self.controlparams)
             print("Control model created")
-            control_meg, _, _ = control_model.run(stimfrequency, s, self.time, 0, 0, 0)
+            control_meg, _, _, _ = control_model.run(stimfrequency, s, self.time, 0, 0, 0,0)
             print("Control model simulated")
             control_pxx, freqs = control_model.calculatePSD(control_meg, self.time)
             print("Control PSD calculated")
@@ -582,7 +583,7 @@ class ChandelierSimpleModelRobust(sciunit.Model, ProduceXY):
             # generate the schizophrenia-like network and run simulation
             schiz_model = SimpleModelExtended(self.schizparams)
             print("Schiz model created")
-            schiz_meg, _, _ = schiz_model.run(stimfrequency, s, self.time, 0, 0, 0)
+            schiz_meg, _, _, _ = schiz_model.run(stimfrequency, s, self.time, 0, 0, 0, 0)
             print("Schiz model simulated")
             schiz_pxx, freqs = schiz_model.calculatePSD(schiz_meg, self.time)
             print("Schiz PSD calculated")
