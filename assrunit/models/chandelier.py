@@ -12,7 +12,7 @@ import sciunit
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mlab
+import matplotlib.mlab as mlab
 
 from assrunit.capabilities import ProduceXY
 
@@ -59,37 +59,34 @@ class SimpleModelExtended(object):
 		seed		: seed for the random generator
 	"""
 
-    def __init__(self, n_ex=20, n_bask=10, n_chand=10, eta=5.0, tau_R=0.1, tau_ex=2.0, tau_bask=8.0, tau_chand=8.0,
-                 g_ee=0.015, g_eb=0.025, g_ec=0.025, g_be=0.015, g_ce=0.015, g_bb=0.02, g_cc=0.02, g_bc=0.02, g_de=0.3,
-                 g_db=0.08, g_dc=0.08, dt=0.05, b_ex=-0.01, b_bask=-0.01, b_chand=-0.01,
-                 background_rate=33.3, A=0.5, filename='default', directory='/'):
-        self.n_ex = n_ex
-        self.n_bask = n_bask
-        self.n_chand = n_chand
-        self.eta = eta
-        self.tau_R = tau_R
-        self.tau_ex = tau_ex
-        self.tau_bask = tau_bask
-        self.tau_chand = tau_chand
-        self.g_ee = g_ee
-        self.g_eb = g_eb
-        self.g_ec = g_ec
-        self.g_be = g_be
-        self.g_ce = g_ce
-        self.g_bb = g_bb
-        self.g_cc = g_cc
-        self.g_bc = g_bc
-        self.g_de = g_de
-        self.g_db = g_db
-        self.g_dc = g_dc
-        self.dt = dt
-        self.b_ex = b_ex
-        self.b_bask = b_bask
-        self.b_chand = b_chand
-        self.background_rate = background_rate
-        self.A = A
-        self.filename = filename
-        self.directory = directory
+    def __init__(self, params):
+        self.n_ex = params["n_ex"]
+        self.n_bask = params["n_bask"]
+        self.n_chand = params["n_chand"]
+        self.eta = params["eta"]
+        self.tau_R = params["tau_R"]
+        self.tau_ex = params["tau_ex"]
+        self.tau_bask = params["tau_bask"]
+        self.tau_chand = params["tau_chand"]
+        self.g_ee = params["g_ee"]
+        self.g_eb = params["g_eb"]
+        self.g_ec = params["g_ec"]
+        self.g_be = params["g_be"]
+        self.g_ce = params["g_ce"]
+        self.g_bb = params["g_bb"]
+        self.g_cc = params["g_cc"]
+        self.g_bc = params["g_bc"]
+        self.g_de = params["g_de"]
+        self.g_db = params["g_db"]
+        self.g_dc = params["g_dc"]
+        self.dt = params["dt"]
+        self.b_ex = params["b_ex"]
+        self.b_bask = params["b_bask"]
+        self.b_chand = params["b_chand"]
+        self.background_rate = params["background_rate"]
+        self.A = params["A"]
+        self.filename = params["filename"]
+        self.directory = params["directory"]
 
     def run(self, drive_frequency=40.0, seed=12345, time=500, saveMEG=0, saveEX=0, saveBASK=0, saveCHAND=0):
         """
