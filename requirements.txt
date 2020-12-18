@@ -40,6 +40,7 @@ mistune==0.8.4
 more-itertools==8.0.2
 nbconvert==5.6.1
 nbformat==4.4.0
+netpyne==0.9.8
 neuromllite==0.1.9
 NEURON>=7.6
 notebook==6.0.3
