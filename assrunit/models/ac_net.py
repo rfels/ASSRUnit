@@ -6,25 +6,16 @@
 ####################################################################
 
 import sciunit
-import random
 
 import numpy as np
-from netpyne import specs
 from netpyne import sim
 
-import shutil
 import pickle
 
 import os
-import sys
 import assrunit.acnet.ACnet_NMDAparams as ACnet_NMDAparams
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../acnet')))
-# import matplotlib.pyplot as plt
-# import matplotlib.mlab as mlab
-
 from assrunit.capabilities import ProduceXY
-
 
 
 class ACNetModel(object):
@@ -119,6 +110,10 @@ class ACNetModel(object):
                     sim.createSimulateAnalyze(netParams=ACnet_NMDAparams.netParams,
                                               simConfig=ACnet_NMDAparams.simConfig)
 
+    '''
+    update all NMDA parameters 
+    '''
+
     def update_NMDAparams(self, tau1_gaba_IE, tau2_gaba_IE, tau1_gaba_II, tau2_gaba_II, nmda_alpha, nmda_beta, nmda_e,
                           nmda_g, nmda_gmax, stim_bkg_pyr_weight, stim_bkg_bask_weight, stim_drive_pyr_weight,
                           stim_drive_bask_weight, conn_pyr_pyr_weight, conn_pyr_bask_weight, conn_bask_pyr_weight,
@@ -199,14 +194,14 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         schizparams: Parameters for the schizophrenia-like network
         name: name of the instance
         """
-        print("init model")
+        print("test model initialized")
         self.controlparams = controlparams
         self.schizparams = schizparams
         super(ACNetMinimalModel, self).__init__(
             controlparams=controlparams, schizparams=schizparams
         )
 
-    def produce_XY(self,stimfrequency=40.0, powerfrequency=40.0):
+    def produce_XY(self, stimfrequency=40.0, powerfrequency=40.0):
         """
         Simulates Y Hz drive to the control and the schizophrenia-like network for all
         random seeds, calculates a Fourier transform of the simulated MEG
@@ -221,15 +216,15 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         control_model = ACNetModel(self.controlparams)
         print("Running control model")
         control_model.run("control")
-        #print("Analysing control model")
-        #controlXY = control_model.analyse("control")
+        # print("Analysing control model")
+        # controlXY = control_model.analyse("control")
 
         # generate the schizophrenia-like network and run simulation
         print("Generating schizophrenia model")
         schiz_model = ACNetModel(self.schizparams)
         print("Running control model")
         schiz_model.run("schiz")
-        #print("Analysing control model")
-        #schizXY = schiz_model.analyse("schiz")
+        # print("Analysing control model")
+        # schizXY = schiz_model.analyse("schiz")
 
-        #return [controlXY, schizXY]
+        # return [controlXY, schizXY]
