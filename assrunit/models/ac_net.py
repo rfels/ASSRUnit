@@ -138,13 +138,16 @@ class ACNetModel(object):
         ACnet_NMDAparams.simConfig.duration = duration
 
     def analyze(self, name, freq):
-        conn_seeds = np.load(self.conn_seeds_file)
-        noise_seeds = np.load(self.noise_seeds_file)
+        #conn_seeds = np.load(self.conn_seeds_file)
+        #noise_seeds = np.load(self.noise_seeds_file)
+        
 
         frequencies = [float(freq)]
 
-        # conn_seeds = [123]  # only for test purposes
-        # noise_seeds = [123]  # only for test purposes
+        conn_seeds = [123]  # only for test purposes
+        noise_seeds = [123]  # only for test purposes
+        # Es reicht hier einfach für einen Seed zu simulieren jeweils. Das verkürzt die Laufzeit sehr stark! Man könnte überlegen auch eine 'Robust' 
+        # Klasse zu machen, wie bei den anderen Modellen, bei denen dann alle Seeds genommen werden
 
         dt = 0.1
         duration = 2000
@@ -173,11 +176,19 @@ class ACNetModel(object):
                     lfp = [x[0] for x in lfp]
                     lfps[i, j, k, :] = lfp
 
-        savefile1 = name + '-Data.npy'
-        savefile2 = '../LFP-Data/' + name + '-Data.npy'
-        np.save(savefile1, lfps)
+        #savefile1 = name + '-Data.npy'
+        savefile2 = name + '-Data.npy' # Es reicht hier nur das LFP zu speichern
+        #np.save(savefile1, lfps)
         np.save(savefile2, lfps)
-
+        
+        # Hier muss jetzt noch das Powerspektrum des LFP berechnet werden und die Power bei 40Hz extrahiert werden. Dies ist dann der Rückgabewert 
+        # dieser Funktion
+        
+        # psd,freqs = mlab.psd(lfp,NFFT=int(timepoints),Fs=1./dt,overlap=0,window=mlab.window_none) sollte funktionieren
+        # psd[0] = 0.0
+        
+        # power4040 = np.sum(psd[38:42]) das extrahiert die Power
+        #  return power4040
 
 class ACNetMinimalModel(sciunit.Model, ProduceXY):
     """Minimal ACNet model """
