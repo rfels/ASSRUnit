@@ -67,8 +67,9 @@ class ACNetModel(object):
         self.freq = params["frequency"]
 
         self.directory = params["directory"]
-        self.conn_seeds_file = params["conn_seed_file"]
-        self.noise_seeds_file = params["noise_seed_file"]
+        #self.conn_seeds_file = params["conn_seed_file"]
+        #self.noise_seeds_file = params["noise_seed_file"] 
+        # Die Dateien sind dann nicht mehr nötig
 
     def run(self, name, freq=40):
         #conn_seeds = np.load(self.conn_seeds_file)
