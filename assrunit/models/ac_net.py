@@ -71,11 +71,12 @@ class ACNetModel(object):
         self.noise_seeds_file = params["noise_seed_file"]
 
     def run(self, name, freq=40):
-        conn_seeds = np.load(self.conn_seeds_file)
-        noise_seeds = np.load(self.noise_seeds_file)
+        #conn_seeds = np.load(self.conn_seeds_file)
+        #noise_seeds = np.load(self.noise_seeds_file)
 
-        # conn_seeds = [123]  # only for test purposes
-        # noise_seeds = [123]  # only for test purposes
+        conn_seeds = [123]  # only for test purposes
+        noise_seeds = [123]  # only for test purposes
+        # auch hier reicht es einen Seed zu simulieren
 
         frequencies = [float(freq)]
         # run sims for different subjects
