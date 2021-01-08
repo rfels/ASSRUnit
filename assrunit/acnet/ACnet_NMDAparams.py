@@ -21,10 +21,6 @@ simConfig = specs.SimConfig()   # object of class SimConfig to store the simulat
 ###############################################################################
 
 
-
-
-
-
 # Population parameters (so far simple HH cells -> change to cells based on hoc files in '../Pyr-Hay' and '../Inh')
 netParams.popParams['PYR'] = {'cellModel': 'PYR_Hay', 'cellType': 'PYR', 'numCells': 256,  'color': 'blue'} # add dict with params for this pop  (196=16*16)
 netParams.popParams['BASK'] = {'cellModel': 'BASK_Vierling', 'cellType': 'BASK', 'numCells': 64,  'color': 'red'} # add dict with params for this pop  (64=8*8)
@@ -104,7 +100,9 @@ netParams.connParams['BASK->BASK'] = {
 
 # Simulation parameters
 simConfig.hParams['celsius'] = 30.0
-simConfig.duration = 2000 # Duration of the simulation, in ms
+#simConfig.duration = 2000 # Duration of the simulation, in ms
+# shorter duration
+simConfig.duration = 2 # Duration of the simulation, in ms
 simConfig.dt = 0.025 # Internal integration timestep to use
 simConfig.seeds = {'conn': 1, 'stim': 1, 'loc': 1} # Seeds for randomizers (connectivity, input stimulation and cell locations)
 simConfig.createNEURONObj = 1  # create HOC objects when instantiating network
