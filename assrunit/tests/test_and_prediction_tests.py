@@ -32,6 +32,7 @@ class Test4040(sciunit.Test):
         return [control4040, schiz4040]
 
     def compute_score(self, observation, prediction):
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(
@@ -66,6 +67,7 @@ class Test3030(sciunit.Test):
 
     def compute_score(self, observation, prediction):
         epsilon = 0.1
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(
@@ -97,6 +99,7 @@ class Test2020(sciunit.Test):
         return [control2020, schiz2020]
 
     def compute_score(self, observation, prediction):
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(
@@ -130,6 +133,7 @@ class Test2040(sciunit.Test):
         return [control2040, schiz2040]
 
     def compute_score(self, observation, prediction):
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(
@@ -163,6 +167,7 @@ class Test4020(sciunit.Test):
         return [control4020, schiz4020]
 
     def compute_score(self, observation, prediction):
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(
@@ -195,6 +200,7 @@ class PredictionTest1010(sciunit.Test):
         return [control1010, schiz1010]
 
     def compute_score(self, observation, prediction):
+        result = {"ratio": 0.0}
         if prediction[0] > 0.0:
             result = {"ratio": prediction[1] / prediction[0]}
         score = self.score_type(result["ratio"] / observation["ratio"])
