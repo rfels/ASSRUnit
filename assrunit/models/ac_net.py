@@ -17,6 +17,9 @@ import assrunit.acnet.ACnet_NMDAparams as ACnet_NMDAparams
 
 from assrunit.capabilities import ProduceXY
 
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+
 
 class ACNetModel(object):
     """
@@ -67,9 +70,10 @@ class ACNetModel(object):
         self.freq = params["frequency"]
 
         self.directory = params["directory"]
-        #self.conn_seeds_file = params["conn_seed_file"]
-        #self.noise_seeds_file = params["noise_seed_file"] 
+
         # Die Dateien sind dann nicht mehr nötig
+        # self.conn_seeds_file = params["conn_seed_file"]
+        # self.noise_seeds_file = params["noise_seed_file"]
 
     def run(self, name, freq=40):
         #conn_seeds = np.load(self.conn_seeds_file)
@@ -142,7 +146,6 @@ class ACNetModel(object):
     def analyze(self, name, freq):
         #conn_seeds = np.load(self.conn_seeds_file)
         #noise_seeds = np.load(self.noise_seeds_file)
-        
 
         frequencies = [float(freq)]
 
@@ -152,12 +155,12 @@ class ACNetModel(object):
         # Klasse zu machen, wie bei den anderen Modellen, bei denen dann alle Seeds genommen werden
 
         dt = 0.1
-        duration = 2000
+        duration = self.duration
         timepoints = int((duration / dt) / 2)
 
         n = len(conn_seeds)
         m = len(noise_seeds)
-        lfps = np.zeros((n, m, 1, timepoints))
+        lfps = np.zeros((n, m, 1, int(timepoints/2)))
 
         print(os.getcwd())
 
@@ -174,7 +177,7 @@ class ACNetModel(object):
                     filename = directory + '/ACnet_NMDA_' + name + '_trial_' + str(j) + '_' + str(int(fr)) + 'Hz.pkl'
                     f = open(filename, 'rb')
                     data = pickle.load(f)
-                    lfp = data['simData']['LFP'][10000:20000]
+                    lfp = data['simData']['LFP'][int(timepoints/2):timepoints]
                     lfp = [x[0] for x in lfp]
                     lfps[i, j, k, :] = lfp
 
@@ -185,12 +188,14 @@ class ACNetModel(object):
         
         # Hier muss jetzt noch das Powerspektrum des LFP berechnet werden und die Power bei 40Hz extrahiert werden. Dies ist dann der Rückgabewert 
         # dieser Funktion
-        
-        # psd,freqs = mlab.psd(lfp,NFFT=int(timepoints),Fs=1./dt,overlap=0,window=mlab.window_none) sollte funktionieren
-        # psd[0] = 0.0
-        
-        # power4040 = np.sum(psd[38:42]) das extrahiert die Power
-        #  return power4040
+
+        # sollte funktionieren
+        psd,freqs = mlab.psd(lfp,NFFT=int(timepoints),Fs=1./dt,noverlap=0,window=mlab.window_none)
+        psd[0] = 0.0
+
+        # das extrahiert die Power
+        power= np.sum(psd[int(freq) - 2 : int(freq) + 2])
+        return power
 
 class ACNetMinimalModel(sciunit.Model, ProduceXY):
     """Minimal ACNet model """
@@ -230,7 +235,7 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         print("Running control model")
         control_model.run("control")
         # print("Analysing control model")
-        # controlXY = control_model.analyse("control")
+        controlXY = control_model.analyze("control",powerfrequency)
 
         # generate the schizophrenia-like network and run simulation
         print("Generating schizophrenia model")
@@ -238,6 +243,6 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         print("Running control model")
         schiz_model.run("schiz")
         # print("Analysing control model")
-        # schizXY = schiz_model.analyse("schiz")
+        schizXY = schiz_model.analyze("schiz",powerfrequency)
 
-        # return [controlXY, schizXY]
+        return [controlXY, schizXY]

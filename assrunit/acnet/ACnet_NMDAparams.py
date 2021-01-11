@@ -99,10 +99,10 @@ netParams.connParams['BASK->BASK'] = {
 
 # Simulation parameters
 simConfig.hParams['celsius'] = 30.0
-# simConfig.duration = 2000 # Duration of the simulation, in ms
+simConfig.duration = 2 # Duration of the simulation, in ms
 # shorter duration
-simConfig.duration = 1  # Duration of the simulation, in ms
-simConfig.dt = 0.025  # Internal integration timestep to use
+#simConfig.duration = 1  # Duration of the simulation, in ms
+simConfig.dt = 0.1 # Internal integration timestep to use
 simConfig.seeds = {'conn': 1, 'stim': 1,
                    'loc': 1}  # Seeds for randomizers (connectivity, input stimulation and cell locations)
 simConfig.createNEURONObj = 1  # create HOC objects when instantiating network
