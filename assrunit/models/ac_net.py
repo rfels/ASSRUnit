@@ -75,7 +75,7 @@ class ACNetModel(object):
         # self.conn_seeds_file = params["conn_seed_file"]
         # self.noise_seeds_file = params["noise_seed_file"]
 
-    def run(self, name, freq=40):
+    def run(self, name, freq):
         #conn_seeds = np.load(self.conn_seeds_file)
         #noise_seeds = np.load(self.noise_seeds_file)
 
@@ -154,6 +154,7 @@ class ACNetModel(object):
         # Es reicht hier einfach für einen Seed zu simulieren jeweils. Das verkürzt die Laufzeit sehr stark! Man könnte überlegen auch eine 'Robust' 
         # Klasse zu machen, wie bei den anderen Modellen, bei denen dann alle Seeds genommen werden
 
+        # TODO: should be parameter
         dt = 0.1
         duration = self.duration
         timepoints = int((duration / dt) / 2)
@@ -233,7 +234,7 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         print("Generating control model")
         control_model = ACNetModel(self.controlparams)
         print("Running control model")
-        control_model.run("control")
+        control_model.run("control",powerfrequency)
         # print("Analysing control model")
         controlXY = control_model.analyze("control",powerfrequency)
 
@@ -241,7 +242,7 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         print("Generating schizophrenia model")
         schiz_model = ACNetModel(self.schizparams)
         print("Running control model")
-        schiz_model.run("schiz")
+        schiz_model.run("schiz",powerfrequency)
         # print("Analysing control model")
         schizXY = schiz_model.analyze("schiz",powerfrequency)
 
