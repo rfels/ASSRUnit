@@ -43,7 +43,8 @@ class ACNetModel(object):
                 conn_pyr_bask_weight :
                 conn_bask_pyr_weight :
                 conn_bask_bask_weight :
-                drive_frequency :
+                duration:
+                freq :
 
         """
 
@@ -68,19 +69,25 @@ class ACNetModel(object):
         self.conn_bask_bask_weight_bask_weight = params["conn_bask_bask_weight"]
         self.duration = params["duration"]
         self.freq = params["frequency"]
-
+        self.dt = params["dt"]
         self.directory = params["directory"]
+        self.seeds = params["seeds"]
 
-        # Die Dateien sind dann nicht mehr nötig
+        # files might not be necessary
         # self.conn_seeds_file = params["conn_seed_file"]
         # self.noise_seeds_file = params["noise_seed_file"]
 
     def run(self, name, freq):
-        #conn_seeds = np.load(self.conn_seeds_file)
-        #noise_seeds = np.load(self.noise_seeds_file)
+        # loading not necessary files
+        # conn_seeds = np.load(self.conn_seeds_file)
+        # noise_seeds = np.load(self.noise_seeds_file)
 
-        conn_seeds = [123]  # only for test purposes
-        noise_seeds = [123]  # only for test purposes
+        # conn_seeds = [123]  # only for test purposes
+        # noise_seeds = [123]  # only for test purposes
+
+        conn_seeds = self.seeds  # only for test purposes
+        noise_seeds = self.seeds  # only for test purposes
+
         # auch hier reicht es einen Seed zu simulieren
 
         frequencies = [float(freq)]
@@ -111,7 +118,7 @@ class ACNetModel(object):
                                            self.stim_drive_pyr_weight, self.stim_drive_bask_weight,
                                            self.conn_pyr_pyr_weight, self.conn_pyr_bask_weight,
                                            self.conn_bask_pyr_weight, self.conn_bask_bask_weight_bask_weight,
-                                           self.duration)
+                                           self.dt, self.duration)
 
                     sim.createSimulateAnalyze(netParams=ACnet_NMDAparams.netParams,
                                               simConfig=ACnet_NMDAparams.simConfig)
@@ -123,7 +130,7 @@ class ACNetModel(object):
     def update_NMDAparams(self, tau1_gaba_IE, tau2_gaba_IE, tau1_gaba_II, tau2_gaba_II, nmda_alpha, nmda_beta, nmda_e,
                           nmda_g, nmda_gmax, stim_bkg_pyr_weight, stim_bkg_bask_weight, stim_drive_pyr_weight,
                           stim_drive_bask_weight, conn_pyr_pyr_weight, conn_pyr_bask_weight, conn_bask_pyr_weight,
-                          conn_bask_bask_weight, duration):
+                          conn_bask_bask_weight, dt, duration):
         ACnet_NMDAparams.netParams.synMechParams['GABA_IE']['tau1'] = tau1_gaba_IE
         ACnet_NMDAparams.netParams.synMechParams['GABA_IE']['tau2'] = tau2_gaba_IE
         ACnet_NMDAparams.netParams.synMechParams['GABA_II']['tau1'] = tau1_gaba_II
@@ -141,27 +148,28 @@ class ACNetModel(object):
         ACnet_NMDAparams.netParams.connParams['PYR->BASK']['weight'] = conn_pyr_bask_weight
         ACnet_NMDAparams.netParams.connParams['BASK->PYR']['weight'] = conn_bask_pyr_weight
         ACnet_NMDAparams.netParams.connParams['BASK->BASK']['weight'] = conn_bask_bask_weight
+        ACnet_NMDAparams.simConfig.dt = dt
         ACnet_NMDAparams.simConfig.duration = duration
 
     def analyze(self, name, freq):
-        #conn_seeds = np.load(self.conn_seeds_file)
-        #noise_seeds = np.load(self.noise_seeds_file)
+        # conn_seeds = np.load(self.conn_seeds_file)
+        # noise_seeds = np.load(self.noise_seeds_file)
 
         frequencies = [float(freq)]
+        # one seed
+        # conn_seeds = [123]  # only for test purposes
+        # noise_seeds = [123]  # only for test purposes
 
-        conn_seeds = [123]  # only for test purposes
-        noise_seeds = [123]  # only for test purposes
-        # Es reicht hier einfach für einen Seed zu simulieren jeweils. Das verkürzt die Laufzeit sehr stark! Man könnte überlegen auch eine 'Robust' 
-        # Klasse zu machen, wie bei den anderen Modellen, bei denen dann alle Seeds genommen werden
+        conn_seeds = self.seeds  # only for test purposes
+        noise_seeds = self.seeds  # only for test purposes
 
-        # TODO: should be parameter
-        dt = 0.1
+        dt = self.dt
         duration = self.duration
         timepoints = int((duration / dt) / 2)
 
         n = len(conn_seeds)
         m = len(noise_seeds)
-        lfps = np.zeros((n, m, 1, int(timepoints/2)))
+        lfps = np.zeros((n, m, 1, int(timepoints / 2)))
 
         print(os.getcwd())
 
@@ -178,25 +186,23 @@ class ACNetModel(object):
                     filename = directory + '/ACnet_NMDA_' + name + '_trial_' + str(j) + '_' + str(int(fr)) + 'Hz.pkl'
                     f = open(filename, 'rb')
                     data = pickle.load(f)
-                    lfp = data['simData']['LFP'][int(timepoints/2):timepoints]
+                    lfp = data['simData']['LFP'][int(timepoints / 2):timepoints]
                     lfp = [x[0] for x in lfp]
                     lfps[i, j, k, :] = lfp
 
-        #savefile1 = name + '-Data.npy'
-        savefile2 = name + '-Data.npy' # Es reicht hier nur das LFP zu speichern
-        #np.save(savefile1, lfps)
+        # savefile1 = name + '-Data.npy'
+        # save only lfp
+        savefile2 = name + '-Data.npy'
+        # np.save(savefile1, lfps)
         np.save(savefile2, lfps)
-        
-        # Hier muss jetzt noch das Powerspektrum des LFP berechnet werden und die Power bei 40Hz extrahiert werden. Dies ist dann der Rückgabewert 
-        # dieser Funktion
 
-        # sollte funktionieren
-        psd,freqs = mlab.psd(lfp,NFFT=int(timepoints),Fs=1./dt,noverlap=0,window=mlab.window_none)
+        psd, freqs = mlab.psd(lfp, NFFT=int(timepoints), Fs=1. / dt, noverlap=0, window=mlab.window_none)
         psd[0] = 0.0
 
-        # das extrahiert die Power
-        power= np.sum(psd[int(freq) - 2 : int(freq) + 2])
+        # extracting power
+        power = np.sum(psd[int(freq) - 2: int(freq) + 2])
         return power
+
 
 class ACNetMinimalModel(sciunit.Model, ProduceXY):
     """Minimal ACNet model """
@@ -234,16 +240,16 @@ class ACNetMinimalModel(sciunit.Model, ProduceXY):
         print("Generating control model")
         control_model = ACNetModel(self.controlparams)
         print("Running control model")
-        control_model.run("control",powerfrequency)
+        control_model.run("control", powerfrequency)
         # print("Analysing control model")
-        controlXY = control_model.analyze("control",powerfrequency)
+        controlXY = control_model.analyze("control", powerfrequency)
 
         # generate the schizophrenia-like network and run simulation
         print("Generating schizophrenia model")
         schiz_model = ACNetModel(self.schizparams)
         print("Running control model")
-        schiz_model.run("schiz",powerfrequency)
+        schiz_model.run("schiz", powerfrequency)
         # print("Analysing control model")
-        schizXY = schiz_model.analyze("schiz",powerfrequency)
+        schizXY = schiz_model.analyze("schiz", powerfrequency)
 
         return [controlXY, schizXY]
