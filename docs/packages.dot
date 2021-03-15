@@ -1,0 +1,50 @@
+digraph "packages" {
+charset="utf-8"
+rankdir=BT
+"0" [label="assrunit", shape="box"];
+"1" [label="assrunit.acnet", shape="box"];
+"2" [label="assrunit.acnet.ACnet_NMDAparams", shape="box"];
+"3" [label="assrunit.acnet2_nml2", shape="box"];
+"4" [label="assrunit.acnet2_nml2.controller", shape="box"];
+"5" [label="assrunit.acnet2_nml2.helpers", shape="box"];
+"6" [label="assrunit.acnet2_nml2.simulator", shape="box"];
+"7" [label="assrunit.capabilities", shape="box"];
+"8" [label="assrunit.constants", shape="box"];
+"9" [label="assrunit.db", shape="box"];
+"10" [label="assrunit.models", shape="box"];
+"11" [label="assrunit.models.ac_net", shape="box"];
+"12" [label="assrunit.models.chandelier", shape="box"];
+"13" [label="assrunit.models.genesis", shape="box"];
+"14" [label="assrunit.models.nml2", shape="box"];
+"15" [label="assrunit.models.vierling", shape="box"];
+"16" [label="assrunit.prediction_database_functions", shape="box"];
+"17" [label="assrunit.predictions", shape="box"];
+"18" [label="assrunit.tests", shape="box"];
+"19" [label="assrunit.tests.test_and_prediction_tests", shape="box"];
+"20" [label="assrunit.tests.tests", shape="box"];
+"21" [label="assrunit.visualizations", shape="box"];
+"4" -> "6" [arrowhead="open", arrowtail="none"];
+"9" -> "8" [arrowhead="open", arrowtail="none"];
+"10" -> "11" [arrowhead="open", arrowtail="none"];
+"10" -> "12" [arrowhead="open", arrowtail="none"];
+"10" -> "13" [arrowhead="open", arrowtail="none"];
+"10" -> "14" [arrowhead="open", arrowtail="none"];
+"10" -> "15" [arrowhead="open", arrowtail="none"];
+"11" -> "2" [arrowhead="open", arrowtail="none"];
+"11" -> "7" [arrowhead="open", arrowtail="none"];
+"12" -> "7" [arrowhead="open", arrowtail="none"];
+"13" -> "7" [arrowhead="open", arrowtail="none"];
+"13" -> "8" [arrowhead="open", arrowtail="none"];
+"14" -> "4" [arrowhead="open", arrowtail="none"];
+"14" -> "5" [arrowhead="open", arrowtail="none"];
+"14" -> "7" [arrowhead="open", arrowtail="none"];
+"14" -> "8" [arrowhead="open", arrowtail="none"];
+"15" -> "7" [arrowhead="open", arrowtail="none"];
+"16" -> "9" [arrowhead="open", arrowtail="none"];
+"17" -> "10" [arrowhead="open", arrowtail="none"];
+"17" -> "16" [arrowhead="open", arrowtail="none"];
+"17" -> "19" [arrowhead="open", arrowtail="none"];
+"19" -> "7" [arrowhead="open", arrowtail="none"];
+"20" -> "7" [arrowhead="open", arrowtail="none"];
+"21" -> "9" [arrowhead="open", arrowtail="none"];
+}
